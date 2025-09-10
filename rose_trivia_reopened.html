@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rose Trivia Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #000000 100%);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(40, 40, 40, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(30, 30, 30, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(20, 20, 20, 0.2) 0%, transparent 50%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                /* Musical note patterns */
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><circle cx="15" cy="45" r="4" fill="rgba(100,100,100,0.1)"/><rect x="17" y="25" width="2" height="20" fill="rgba(100,100,100,0.1)"/><ellipse cx="45" cy="15" rx="8" ry="4" fill="rgba(80,80,80,0.1)"/><rect x="47" y="15" width="2" height="15" fill="rgba(80,80,80,0.1)"/></svg>') 100px 80px,
+                /* Guitar silhouette */
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><g transform="translate(100,100)" opacity="0.05"><ellipse cx="0" cy="30" rx="25" ry="40" fill="rgba(200,200,200,0.3)"/><rect x="-2" y="-70" width="4" height="100" fill="rgba(200,200,200,0.3)"/><circle cx="0" cy="-65" r="8" fill="none" stroke="rgba(200,200,200,0.3)" stroke-width="2"/></g></svg>') 300px 200px,
+                /* Microphone pattern */
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><g transform="translate(40,40)" opacity="0.08"><circle cx="0" cy="-15" r="8" fill="rgba(180,180,180,0.4)"/><rect x="-1" y="-5" width="2" height="30" fill="rgba(180,180,180,0.4)"/><path d="M-8,25 L8,25" stroke="rgba(180,180,180,0.4)" stroke-width="2"/></g></svg>') 150px 120px,
+                /* Drum kit elements */
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><g transform="translate(60,60)" opacity="0.06"><circle cx="0" cy="0" r="20" fill="none" stroke="rgba(160,160,160,0.4)" stroke-width="2"/><circle cx="25" cy="-10" r="12" fill="none" stroke="rgba(160,160,160,0.3)" stroke-width="1.5"/><circle cx="-20" cy="15" r="15" fill="none" stroke="rgba(160,160,160,0.3)" stroke-width="1.5"/></g></svg>') 250px 180px;
+            background-size: 120px 120px, 400px 300px, 200px 160px, 300px 240px;
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                /* Stage lighting effect */
+                radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.02) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 80%, rgba(255,255,255,0.01) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .game-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            background: linear-gradient(45deg, #ffffff, #cccccc, #999999);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .score-timer {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            background: rgba(0,0,0,0.5);
+            padding: 15px 25px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .timer {
+            background: linear-gradient(45deg, #666666, #444444);
+            animation: pulse 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        .question-card {
+            background: rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            backdrop-filter: blur(15px);
+            margin-bottom: 30px;
+            animation: slideIn 0.5s ease-out;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .member-btn {
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: rgba(0,0,0,0.4);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .member-btn:hover::before {
+            left: 100%;
+        }
+
+        .member-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            background: rgba(40,40,40,0.6);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .member-btn:active {
+            transform: scale(0.95);
+        }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6rem;
+            z-index: 1000;
+            pointer-events: none;
+            animation: feedbackPop 1.5s ease-out forwards;
+        }
+
+        @keyframes feedbackPop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5) rotate(-10deg);
+            }
+            30% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2) rotate(5deg);
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(1.1) rotate(-2deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+        }
+
+        .correct {
+            color: #2ed573;
+            text-shadow: 0 0 20px #2ed573;
+        }
+
+        .incorrect {
+            color: #cc0000;
+            text-shadow: 0 0 20px #cc0000;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .results-card {
+            background: rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            animation: slideIn 0.5s ease-out;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .final-score {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #cccccc;
+        }
+
+        .ranking {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .superfan {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+        }
+
+        .devoted-fan {
+            background: linear-gradient(45deg, #888888, #666666);
+        }
+
+        .casual-fan {
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+        }
+
+        .needs-improvement {
+            background: linear-gradient(45deg, #666666, #444444);
+        }
+
+        .play-again-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .play-again-btn:hover {
+            background: rgba(40,40,40,0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 600px;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #888888, #666666);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .floating-hearts {
+            position: absolute;
+            pointer-events: none;
+            font-size: 2rem;
+            animation: floatUp 3s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">🌹 The Rose Trivia 🌹</h1>
+            <p class="subtitle">Test your knowledge about Woosung, Dojoon, Hajoon, and Jaehyeong!</p>
+        </div>
+
+        <div class="score-timer">
+            <div class="stat">Score: <span id="score">0</span></div>
+            <div class="stat timer">Time: <span id="timeLeft">15</span>s</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="question-card" id="questionCard">
+            <div class="question-text" id="questionText">Loading question...</div>
+            <div class="members-grid">
+                <button class="member-btn" onclick="selectMember('Woosung')">🎤 Woosung</button>
+                <button class="member-btn" onclick="selectMember('Dojoon')">🎸 Dojoon</button>
+                <button class="member-btn" onclick="selectMember('Hajoon')">🥁 Hajoon</button>
+                <button class="member-btn" onclick="selectMember('Jaehyeong')">🎹 Jaehyeong</button>
+            </div>
+        </div>
+
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-card">
+                <div class="final-score" id="finalScore">0/0</div>
+                <div class="ranking" id="ranking"></div>
+                <p id="rankingMessage"></p>
+                <button class="play-again-btn" onclick="startGame()">Play Again 🌹</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Who is the main vocalist and leader of The Rose?",
+                answer: "Woosung"
+            },
+            {
+                question: "Which member plays the electric guitar?",
+                answer: "Dojoon"
+            },
+            {
+                question: "Who is the drummer of the band?",
+                answer: "Hajoon"
+            },
+            {
+                question: "Which member plays the keyboard and bass?",
+                answer: "Jaehyeong"
+            },
+            {
+                question: "Who wrote the song 'Sorry' along with the other members?",
+                answer: "Woosung"
+            },
+            {
+                question: "Which member is known for his powerful drumming in 'Red'?",
+                answer: "Hajoon"
+            },
+            {
+                question: "Who provides backing vocals and plays lead guitar?",
+                answer: "Dojoon"
+            },
+            {
+                question: "Which member is also known by the stage name 'Leo'?",
+                answer: "Jaehyeong"
+            },
+            {
+                question: "Who is the oldest member of The Rose?",
+                answer: "Woosung"
+            },
+            {
+                question: "Which member studied abroad and speaks fluent English?",
+                answer: "Woosung"
+            },
+            {
+                question: "Who composed much of the music for 'She's in the Rain'?",
+                answer: "Woosung"
+            },
+            {
+                question: "Which member is known for his energetic stage presence behind the drums?",
+                answer: "Hajoon"
+            },
+            {
+                question: "Who provides the bass lines during live performances?",
+                answer: "Jaehyeong"
+            },
+            {
+                question: "Which member has distinctive vocal harmonies in 'Baby'?",
+                answer: "Dojoon"
+            },
+            {
+                question: "Who is known for his emotional singing in ballads like 'I.L.Y'?",
+                answer: "Woosung"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let gameQuestions = [];
+        let timeLeft = 15;
+        let timer;
+        let gameActive = false;
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function startGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            gameQuestions = shuffleArray(questions).slice(0, 10);
+            gameActive = true;
+            
+            document.getElementById('questionCard').style.display = 'block';
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('score').textContent = score;
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex >= gameQuestions.length) {
+                endGame();
+                return;
+            }
+
+            const question = gameQuestions[currentQuestionIndex];
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Update progress bar
+            const progress = (currentQuestionIndex / gameQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Reset and start timer
+            timeLeft = 15;
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeLeft').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showFeedback(false);
+                    setTimeout(() => {
+                        nextQuestion();
+                    }, 1500);
+                }
+            }, 1000);
+        }
+
+        function selectMember(selectedMember) {
+            if (!gameActive) return;
+            
+            clearInterval(timer);
+            const currentQuestion = gameQuestions[currentQuestionIndex];
+            const isCorrect = selectedMember === currentQuestion.answer;
+            
+            if (isCorrect) {
+                score++;
+                document.getElementById('score').textContent = score;
+                createFloatingHearts();
+            }
+            
+            showFeedback(isCorrect);
+            
+            setTimeout(() => {
+                nextQuestion();
+            }, 1500);
+        }
+
+        function showFeedback(isCorrect) {
+            const feedback = document.createElement('div');
+            feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedback.textContent = isCorrect ? '✨ Amazing! ✨' : '💔 Oops! 💔';
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 1500);
+        }
+
+        function createFloatingHearts() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-hearts';
+                    heart.textContent = '💖';
+                    heart.style.left = (Math.random() * window.innerWidth) + 'px';
+                    heart.style.top = (Math.random() * window.innerHeight) + 'px';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 3000);
+                }, i * 200);
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(timer);
+            
+            document.getElementById('questionCard').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+            
+            const finalScore = `${score}/${gameQuestions.length}`;
+            document.getElementById('finalScore').textContent = finalScore;
+            
+            const percentage = (score / gameQuestions.length) * 100;
+            let ranking, message, rankingClass;
+            
+            if (percentage >= 90) {
+                ranking = "SUPERFAN! 🌟";
+                message = "You know The Rose inside and out! You're a true Black Rose! 🖤🌹";
+                rankingClass = "superfan";
+            } else if (percentage >= 70) {
+                ranking = "Devoted Fan 💖";
+                message = "Great job! You really love The Rose! Keep listening to their amazing music!";
+                rankingClass = "devoted-fan";
+            } else if (percentage >= 50) {
+                ranking = "Casual Fan 🌸";
+                message = "Not bad! You know some things about The Rose. Time for more music exploration!";
+                rankingClass = "casual-fan";
+            } else {
+                ranking = "Need More Rose Time 🌱";
+                message = "Looks like you need to spend more time getting to know the members! Start with their hits!";
+                rankingClass = "needs-improvement";
+            }
+            
+            const rankingElement = document.getElementById('ranking');
+            rankingElement.textContent = ranking;
+            rankingElement.className = `ranking ${rankingClass}`;
+            document.getElementById('rankingMessage').textContent = message;
+            
+            // Celebration animation for high scores
+            if (percentage >= 70) {
+                createFloatingHearts();
+            }
+        }
+
+        // Start the game when page loads
+        window.addEventListener('load', () => {
+            startGame();
+        });
+    </script>
+</body>
+</html>
