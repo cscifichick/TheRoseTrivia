@@ -31,7 +31,7 @@ Test your knowledge about Woosung (vocals), Dojoon (guitar), Hajoon (drums), and
 - 🎤 **Woosung** - Main vocalist and leader
 - 🎸 **Dojoon** - Electric guitar
 - 🥁 **Hajoon** - Drums  
-- 🎸 **Jaehyeong** - Bass guitar
+- 🎸 **Taegyeum** - Bass guitar
 
 ## Installation
 1. Clone this repository
