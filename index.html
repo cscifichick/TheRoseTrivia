@@ -319,9 +319,16 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #888888, #666666);
+            background: linear-gradient(90deg, #ff69b4, #6495ed, #ffffff, #dc143c);
+            background-size: 300% 100%;
             width: 0%;
             transition: width 0.3s ease;
+            animation: progressGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes progressGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
         .floating-hearts {
@@ -362,10 +369,30 @@
         <div class="question-card" id="questionCard">
             <div class="question-text" id="questionText">Loading question...</div>
             <div class="members-grid">
-                <button class="member-btn" onclick="selectMember('Woosung')">🎤 Woosung</button>
-                <button class="member-btn" onclick="selectMember('Dojoon')">🎸 Dojoon</button>
-                <button class="member-btn" onclick="selectMember('Hajoon')">🥁 Hajoon</button>
-                <button class="member-btn" onclick="selectMember('Taegyeom')">🎸 Taegyeom</button>
+                <button class="member-btn" onclick="selectMember('Woosung')">
+                    <!-- Replace src with your GitHub raw URL: https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/images/woosung.jpg -->
+                    <img src="https://raw.githubusercontent.com/cscifichick/TheRoseTrivia/main/images/Woosung.jpg" alt="Woosung" class="member-image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="member-image" style="display: none;">🎤</div>
+                    <div class="member-name">Woosung</div>
+                </button>
+                <button class="member-btn" onclick="selectMember('Dojoon')">
+                    <!-- Replace src with your GitHub raw URL: https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/images/dojoon.jpg -->
+                    <img src="https://raw.githubusercontent.com/cscifichick/TheRoseTrivia/main/images/Dojoon.jpg" alt="Dojoon" class="member-image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="member-image" style="display: none;">🎸</div>
+                    <div class="member-name">Dojoon</div>
+                </button>
+                <button class="member-btn" onclick="selectMember('Hajoon')">
+                    <!-- Replace src with your GitHub raw URL: https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/images/hajoon.jpg -->
+                    <img src="https://raw.githubusercontent.com/cscifichick/TheRoseTrivia/main/images/Hajoon.jpg" alt="Hajoon" class="member-image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="member-image" style="display: none;">🥁</div>
+                    <div class="member-name">Hajoon</div>
+                </button>
+                <button class="member-btn" onclick="selectMember('Taegyeom')">
+                    <!-- Replace src with your GitHub raw URL: https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/images/taegyeom.jpg -->
+                    <img src="https://raw.githubusercontent.com/cscifichick/TheRoseTrivia/main/images/Taegyeom.jpg" alt="Taegyeom" class="member-image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="member-image" style="display: none;">🎸</div>
+                    <div class="member-name">Taegyeom</div>
+                </button>
             </div>
         </div>
 
@@ -507,6 +534,7 @@
             
             // Reset and start timer
             timeLeft = 15;
+            document.getElementById('timeLeft').textContent = timeLeft;
             startTimer();
         }
 
@@ -590,41 +618,32 @@
             document.getElementById('finalScore').textContent = finalScore;
             
             const percentage = (score / gameQuestions.length) * 100;
-            let ranking, message, rankingClass;
+            let ranking, message;
             
             if (percentage >= 90) {
-                ranking = "SUPERFAN! 🌟";
-                message = "You know The Rose inside and out! You're a true Black Rose! 🖤🌹";
-                rankingClass = "superfan";
+                ranking = "🌟 SUPERFAN! 🌟";
+                message = "You know The Rose inside and out! Incredible!";
+                document.getElementById('ranking').className = 'ranking superfan';
             } else if (percentage >= 70) {
-                ranking = "Devoted Fan 💖";
-                message = "Great job! You really love The Rose! Keep listening to their amazing music!";
-                rankingClass = "devoted-fan";
+                ranking = "💎 Devoted Fan 💎";
+                message = "Your Rose knowledge is impressive! Keep it up!";
+                document.getElementById('ranking').className = 'ranking devoted-fan';
             } else if (percentage >= 50) {
-                ranking = "Casual Fan 🌸";
-                message = "Not bad! You know some things about The Rose. Time for more music exploration!";
-                rankingClass = "casual-fan";
+                ranking = "🌸 Casual Fan 🌸";
+                message = "You know some things about The Rose. Keep listening!";
+                document.getElementById('ranking').className = 'ranking casual-fan';
             } else {
-                ranking = "Need More Rose Time 🌱";
-                message = "Looks like you need to spend more time getting to know the members! Start with their hits!";
-                rankingClass = "needs-improvement";
+                ranking = "🌱 Growing Fan 🌱";
+                message = "Time to dive deeper into The Rose's music!";
+                document.getElementById('ranking').className = 'ranking needs-improvement';
             }
             
-            const rankingElement = document.getElementById('ranking');
-            rankingElement.textContent = ranking;
-            rankingElement.className = `ranking ${rankingClass}`;
+            document.getElementById('ranking').textContent = ranking;
             document.getElementById('rankingMessage').textContent = message;
-            
-            // Celebration animation for high scores
-            if (percentage >= 70) {
-                createFloatingHearts();
-            }
         }
 
         // Start the game when page loads
-        window.addEventListener('load', () => {
-            startGame();
-        });
+        window.addEventListener('load', startGame);
     </script>
 </body>
 </html>
