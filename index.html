@@ -160,8 +160,8 @@
         }
 
         .member-btn {
-            padding: 20px;
-            font-size: 1.3rem;
+            padding: 15px;
+            font-size: 1.1rem;
             font-weight: bold;
             background: rgba(0,0,0,0.4);
             color: white;
@@ -172,6 +172,11 @@
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-height: 120px;
         }
 
         .member-btn::before {
@@ -198,6 +203,29 @@
 
         .member-btn:active {
             transform: scale(0.95);
+        }
+
+        .member-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            margin-bottom: 5px;
+        }
+
+        .member-image[style*="display: none"] + .member-image {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .member-name {
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
         }
 
         .feedback {
@@ -348,6 +376,24 @@
                 transform: translateY(-100px) rotate(360deg);
             }
         }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .member-image {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .member-btn {
+                min-height: 100px;
+                padding: 10px;
+                font-size: 1rem;
+            }
+            
+            .member-name {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -370,25 +416,21 @@
             <div class="question-text" id="questionText">Loading question...</div>
             <div class="members-grid">
                 <button class="member-btn" onclick="selectMember('Woosung')">
-                    <!-- Replace src with your GitHub raw URL: https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/images/woosung.jpg -->
                     <img src="https://raw.githubusercontent.com/cscifichick/TheRoseTrivia/main/images/Woosungsmall.jpg" alt="Woosung" class="member-image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="member-image" style="display: none;">🎤</div>
                     <div class="member-name">Woosung</div>
                 </button>
                 <button class="member-btn" onclick="selectMember('Dojoon')">
-                    <!-- Replace src with your GitHub raw URL: https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/images/dojoon.jpg -->
                     <img src="https://raw.githubusercontent.com/cscifichick/TheRoseTrivia/main/images/Dojoonsmall.jpg" alt="Dojoon" class="member-image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="member-image" style="display: none;">🎸</div>
                     <div class="member-name">Dojoon</div>
                 </button>
                 <button class="member-btn" onclick="selectMember('Hajoon')">
-                    <!-- Replace src with your GitHub raw URL: https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/images/hajoon.jpg -->
                     <img src="https://raw.githubusercontent.com/cscifichick/TheRoseTrivia/main/images/Hajoonsmall.jpg" alt="Hajoon" class="member-image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="member-image" style="display: none;">🥁</div>
                     <div class="member-name">Hajoon</div>
                 </button>
                 <button class="member-btn" onclick="selectMember('Taegyeom')">
-                    <!-- Replace src with your GitHub raw URL: https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/images/taegyeom.jpg -->
                     <img src="https://raw.githubusercontent.com/cscifichick/TheRoseTrivia/main/images/Taegyeomsmall.jpg" alt="Taegyeom" class="member-image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="member-image" style="display: none;">🎸</div>
                     <div class="member-name">Taegyeom</div>
