@@ -32,23 +32,44 @@
         .game-header {
             text-align: center;
             margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+            background-image: url('https://raw.githubusercontent.com/cscifichick/TheRoseTrivia/main/images/TheRoseBW.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 20px;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
         }
 
         .game-title {
             font-size: 3rem;
-            font-weight: bold;
+            font-weight: normal;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            background: linear-gradient(45deg, #ffffff, #cccccc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: white;
+            position: relative;
+            z-index: 1;
         }
 
         .subtitle {
             font-size: 1.2rem;
-            opacity: 0.9;
+            color: white;
             margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .score-timer {
@@ -322,6 +343,18 @@
 
         /* Responsive design for smaller screens */
         @media (max-width: 768px) {
+            .game-header {
+                padding: 30px 15px;
+            }
+            
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
             .member-image {
                 width: 50px;
                 height: 50px;
@@ -600,6 +633,8 @@
             
             const percentage = (score / gameQuestions.length) * 100;
             let ranking, message;
+            
+            
             
             if (percentage >= 90) {
                 ranking = "🌟 SUPERFAN! 🌟";
